@@ -1,2 +1,10 @@
 .pio
 .vscode/
+*~
+.*~
+*.swp
+*.swo
+*.orig
+CMakeLists.txt.user*
+build
+build-creator

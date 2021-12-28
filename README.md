@@ -39,6 +39,21 @@ As the ADC input impedence is quite low you may want to put a voltage buffer in 
 e.g. an opamp with the output connected to negative input,
 and then put your signal on the positive input of the opamp.
 
+
+### Build
+
+Use cmake to build the project and openocd to flash it:
+
+```
+mkdir ./build/
+cd ./build/
+cmake ..
+make
+make ocd
+```
+
+You also may need to reset the target manually for successful flashing.
+
 ### Sigrok
 
 To use with sigrok/pulseview, apply [libsigrok.patch](./libsigrok.patch),
