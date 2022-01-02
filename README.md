@@ -1,18 +1,18 @@
-Use stm32f103 as a hobby oscilloscope.
+Use stm32f103 or stm32g431 as a hobby oscilloscope.
 
 This has two channels, measuring on PA0 and PA1,
 this can be easily increased in the code though.
 Be careful to not fry your microcontroller,
 don't give more than 3.3V (VDD) to them.
 
-It uses USART1  (Pins A9 and A10) to communicate with your computer.
+It uses USART1  (Pins A9 and A10) to communicate with your computer for F1 family or STLINK VCP (USART2) for G4.
 
 ### Functional overview:
 
 * `TIM1` triggers `ADC1` to sample
 * `DMA1_CH1` transfers `ADC1->DR` to memory
 * `DMA1_CH1` interrupt handler starts `DMA1_CH4` (on half and complete)
-* `DMA1_CH4` transfers memory to `USART1`
+* `DMA1_CH4` transfers memory to `USART`
 
 ### Protocol
 
@@ -39,6 +39,7 @@ As the ADC input impedence is quite low you may want to put a voltage buffer in 
 e.g. an opamp with the output connected to negative input,
 and then put your signal on the positive input of the opamp.
 
+G4 family is more suitable for real use as it has internals opamps.
 
 ### Build
 

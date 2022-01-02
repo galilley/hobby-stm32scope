@@ -12,7 +12,8 @@ set( PROJECT hobby-stm32scope)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set( MCU_VENDOR STM32)
-set( MCU_FAMILY F1)
+#set( MCU_FAMILY F1)
+set( MCU_FAMILY G4)
 string(TOLOWER "${MCU_VENDOR}" MCU_VENDOR_LOWER_CASE)
 string(TOLOWER "${MCU_FAMILY}" MCU_FAMILY_LOWER_CASE)
 add_definitions( -D${MCU_VENDOR}${MCU_FAMILY})
@@ -20,7 +21,11 @@ add_definitions( -DNDEBUG)
 
 set( STM32_FAMILY ${MCU_FAMILY})
 set( CMAKE_TOOLCHAIN_FILE cmake/gcc_stm32.cmake)
-set( STM32_CHIP STM32F103C8)
+if(${MCU_FAMILY} STREQUAL F1)
+    set( STM32_CHIP STM32F103C8)
+else()
+    set( STM32_CHIP STM32G431KB)
+endif()
 
 include(gcc_stm32)
 
@@ -47,13 +52,38 @@ include_directories(${LIBOPENCM3_INCLUDE_DIRS})
 
 set( PROJECT_SOURCES
     src/main.c
+    src/control.c
     )
+
+set( PROJECT_HEADERS
+    include/types.h
+    src/adc.h
+    src/bsp.h
+    src/control.h
+    )
+
+if(${MCU_FAMILY} STREQUAL F1)
+    set( PROJECT_SOURCES ${PROJECT_SOURCES}
+        src/adc_f1.c
+        src/bsp_f1.c
+        )
+else()
+    set( PROJECT_SOURCES ${PROJECT_SOURCES}
+        src/adc_g4.c
+        src/bsp_g4.c
+        )
+endif()
 
 set( CMAKE_EXE_LINKER_FLAGS ${LIBOPENCM3_LINKER_FLAGS} CACHE INTERNAL "executable linker flags")
 set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs --specs=nosys.specs")
 
-SET(STM32_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/src/stm32-h103.ld)
-ADD_EXECUTABLE(${PROJECT} ${PROJECT_SOURCES} ${PROJECT_SCHEMES})
+if(${MCU_FAMILY} STREQUAL F1)
+    SET(STM32_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/src/stm32-h103.ld)
+else()
+    SET(STM32_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/src/stm32g431kb.ld)
+endif()
+
+ADD_EXECUTABLE(${PROJECT} ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${PROJECT_SCHEMES})
 
 TARGET_LINK_LIBRARIES(${PROJECT} ${LIBRARIES})
 
