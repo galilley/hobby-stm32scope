@@ -1,4 +1,4 @@
-Use stm32f103 or stm32g431 as a hobby oscilloscope.
+Use stm32f103 (Blue Pill) or stm32g431 (NUCLEO-G431KB) as a hobby oscilloscope.
 
 This has two channels, measuring on PA0 and PA1,
 this can be easily increased in the code though.
